@@ -1,3 +1,47 @@
+<?php 
+$insert=false;
+if (isset($_POST['name'])){
+
+
+    //Connection variables :  these 3 are the defaults , don't change these values or else error function will be activated
+    $submit=true;
+    $server="localhost";
+    $username="root";
+    $password="";
+
+    // create db connection
+    $con=mysqli_connect($server,$username,$password);
+
+    // check for connection success
+    if(!$con){
+        die("connection to this db failed due to ".mysqli_connect_error() );
+    }
+    // echo "db connection successful"
+    
+    //collect post variables
+    $name=$_POST['name'];
+    $age=$_POST['age'];
+    $gender=$_POST['gender'];
+    $email=$_POST['email'];
+    $phone=$_POST['phone'];
+    $desc=$_POST['desc'];
+    $sql="INSERT INTO `shitty_form01`.`test_form_01` (`name`, `age`, `gender`, `email`, `phone`, `other`, `date`) VALUES ('$name', '$age', '$gender', '$email','$phone','$desc', current_timestamp());"; 
+    // echo $sql;
+
+    // Execute the query
+    // -> is object operator
+    if($con -> query($sql)==true){
+        // successful insertion flag
+        $insert=true;
+        // echo "Insertion successful";
+    }else{
+        echo "ERROR : $sql <br> $con->error";
+    }
+
+    // close the db connection
+    $con->close();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -19,14 +63,20 @@
     <div class="container">
       <h1>Welcome to some shitty form</h1>
       <p>Give me the following data</p>
-      <p class="submsg">We got your data, Now share it with others</p>
+      <?php 
+      if($insert==true){
+          echo "<p class='submsg'>We got your data, Now share it with others</p>";
+        }
+
+      ?>
+      
       <form action="04_project.php" method="post">
         <input type="text" name="name" id="name" placeholder="Your name" />
         <input type="text" name="age" id="age" placeholder="Your age" />
         <input
           type="text"
           name="gender"
-          id="gender"
+          id="gender" 
           placeholder="Your gender"
         />
         <input type="email" name="email" id="email" placeholder="Your email" />
@@ -42,6 +92,5 @@
       </form>
     </div>
     <script src="./04_app.js"></script>
-    <!-- INSERT INTO `test_form_01` (`sno`, `name`, `age`, `gender`, `email`, `phone`, `other`, `date`) VALUES ('1', 'Lorem Name 01', '20', 'male', 'lorem01@mail.com', '9800909090', 'Something lorem lorem', current_timestamp()); -->
   </body>
 </html>
